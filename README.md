@@ -1,2 +1,2 @@
 # Electric-field
-![screenshot of electric field](/Rplots.pdf)
+![screenshot of electric field](/Rplots.png)

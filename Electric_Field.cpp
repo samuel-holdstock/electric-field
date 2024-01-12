@@ -6,57 +6,34 @@
 #include <utility> // std::pair
 #include <stdexcept> // std::runtime_error
 #include <sstream> // std::stringstream
-
+#include "Electric_Field.h"
 
 const double K = 8.987551 * pow(10,9);
 
-class Atom{
-  private:
-    std::vector<double> position;
-    double charge;
-  public:
-    Atom(){}
-    Atom(std::vector<double> position, double charge){
-      setPosition(position);
-      setCharge(charge);
-    }
-    std::vector<double> getPosition(){
-      return this->position;
-    }
-    void setPosition(std::vector<double> position){
-      this->position = position;
-    }
-    double getCharge(){
-      return this->charge;
-    }
-    void setCharge(double newCharge){
-      this->charge = newCharge;
-    }
-    void display(){
-      for(auto i:position){
-        std::cout<<i;
-      }
-      std::cout<<std::endl<<charge<<std::endl;
-    }
-};
-
-std::vector<Atom> read_csv(std::string fileName);
-std::vector<std::vector<double>> get_field(std::vector<Atom> atoms, std::pair<double,double> start,std::pair<double,double> end,int M);
-
-int main() {
-  std::vector<Atom> atoms = read_csv("data.csv");
-  std::pair<double,double> start = std::pair<double,double>{0,0};
-  std::pair<double,double> end = std::pair<double,double>{10,10};
-  int M = 10;
-  std::vector<std::vector<double>> field = get_field(atoms,start,end,M);
-  for(int i=0; i<M*M; ++i){
-    std::cout<<"({"<<field[i][0]<<","<<field[i][1]<<"},{"<<field[i][2]<<field[i][3]<<"})";
-    if((i+1)%M==0){
-      std::cout<<std::endl;
-    }
-  }
-  return 0;
+Atom::Atom(std::vector<double> position, double charge){
+  setPosition(position);
+  setCharge(charge);
 }
+std::vector<double> Atom::getPosition(){
+  return this->position;
+}
+void Atom::setPosition(std::vector<double> position){
+  this->position = position;
+}
+double Atom::getCharge(){
+  return this->charge;
+}
+void Atom::setCharge(double newCharge){
+  this->charge = newCharge;
+}
+void Atom::display(){
+  for(auto i:position){
+    std::cout<<i;
+  }
+  std::cout<<std::endl<<charge<<std::endl;
+}
+
+
 
 std::vector<Atom> read_csv(std::string fileName){
   int numberOfAtoms=0;
@@ -84,12 +61,6 @@ std::vector<Atom> read_csv(std::string fileName){
     }
     myFile.close();
   }
-  // for(auto i:result){
-  //     for(auto j:i.second){
-  //       std::cout<<j;
-  //     }
-  //     std::cout<<std::endl;
-  //   }
   std::vector<Atom> atoms;
   for(int i=0;i<numberOfAtoms;i++){
     double xpos = result[0].second[i];

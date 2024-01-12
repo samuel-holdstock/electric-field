@@ -1,31 +1,43 @@
-#include <Rcpp.h>
+#include <RcppArmadillo.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+
 #include "Electric_Field.h"
 
 using namespace Rcpp;
-
+using namespace arma;
 
 // [[Rcpp::export]]
-double meanC(NumericVector x) {
-  int n = x.size();
-  double total = 0;
-  for(int i = 0; i < n; ++i) {
-    total += x[i];
+arma::mat start() {
+  std::vector<Atom> atoms = read_csv("data.csv");
+  std::pair<double,double> start = std::pair<double,double>{2.5,2.5};
+  std::pair<double,double> end = std::pair<double,double>{7.5,7.5};
+  int M = 40;
+  std::vector<std::vector<double>> field = get_field(atoms,start,end,M);
+  int ncol = field[0].size();
+  int nrow = field.size();
+  arma::mat field_mat(nrow,ncol,arma::fill::zeros);
+  for(int i=0; i<M*M; ++i){
+    field_mat(i,0) = field[i][0];
+    field_mat(i,1) = field[i][1];
+    field_mat(i,2) = field[i][2];
+    field_mat(i,3) = field[i][3];
   }
-  return total / n;
+  return field_mat;
 }
 
 // [[Rcpp::export]]
-int main() {
+arma::mat get_charges(){
   std::vector<Atom> atoms = read_csv("data.csv");
-  std::pair<double,double> start = std::pair<double,double>{0,0};
-  std::pair<double,double> end = std::pair<double,double>{10,10};
-  int M = 10;
-  std::vector<std::vector<double>> field = get_field(atoms,start,end,M);
-  for(int i=0; i<M*M; ++i){
-    std::cout<<"({"<<field[i][0]<<","<<field[i][1]<<"},{"<<field[i][2]<<field[i][3]<<"})";
-    if((i+1)%M==0){
-      std::cout<<std::endl;
-    }
+  int nrows = atoms.size();
+  int ncols = 3;
+  arma::mat charges_mat(nrows,ncols,arma::fill::zeros);
+  for(int i=0; i<nrows;++i){
+    Atom atom = atoms[i];
+    std::vector<double> position = atom.getPosition();
+    double charge = atom.getCharge();
+    charges_mat(i,0) = position[0];
+    charges_mat(i,1) = position[1]; 
+    charges_mat(i,2) = charge;
   }
-  return 0;
+  return charges_mat;
 }

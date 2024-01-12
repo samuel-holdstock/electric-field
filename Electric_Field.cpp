@@ -41,7 +41,7 @@ std::vector<Atom> read_csv(std::string fileName){
   std::ifstream myFile(fileName);
   if(!myFile.is_open()) throw std::runtime_error("Could not open file.");
   std::string line, colname;
-  int val;
+  double val;
   if(myFile.good()){
     std::getline(myFile,line);
     std::stringstream ss(line);
@@ -82,11 +82,11 @@ std::vector<std::vector<double>> get_field(std::vector<Atom> atoms, std::pair<do
       double force[2] = {0,0};
       double position[2] {start.first + i*dx,start.second + j*dy};
       for(auto atom:atoms){
-        double displacement [2] = {atom.getPosition()[0] - position[0], atom.getPosition()[1] - position[1]};
+        double displacement [2] = {position[0] - atom.getPosition()[0], position[1] - atom.getPosition()[1]};
         double distance2 = pow(displacement[0],2)+pow(displacement[1],2);
         double distance = sqrt(distance2);
-        force[0] = K*atom.getCharge()/distance2 * displacement[0]/distance;
-        force[1] = K*atom.getCharge()/distance2 * displacement[1]/distance;
+        force[0] += K*atom.getCharge()/distance2 * displacement[0]/distance;
+        force[1] += K*atom.getCharge()/distance2 * displacement[1]/distance;
       }
       field.push_back(std::vector<double>{position[0],position[1],force[0],force[1]});
     }

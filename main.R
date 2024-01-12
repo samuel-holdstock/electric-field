@@ -13,6 +13,8 @@ charges = data.frame(get_charges())
 ggplot(m,aes(x=X1,y=X2))+
     geom_segment(aes(xend=X1+X3/l,yend=X2+X4/l,colour=l), arrow = arrow(length = unit(0.1, "cm")),size=0.25)+
     scale_colour_continuous(low = "grey80", high = "darkred")+
+    labs(color="Field magnitude")+
     new_scale_colour()+
     geom_point(data=charges,aes(x=X1,y=X2,colour=X3))+
-    scale_colour_continuous(low="blue",high="red")
+    scale_colour_continuous(low="blue",high="red")+
+    labs(color="Charge")
